@@ -1,0 +1,10 @@
+body{
+    margin:0;
+    text-align: center;
+    background-color: black;
+    color: white;
+}
+section{
+    margin:0 10% 10% 10%;
+    text-align: center;
+}
