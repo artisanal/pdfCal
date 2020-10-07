@@ -1,0 +1,22 @@
+{
+  "name": "pdfcal",
+  "version": "0.0.1",
+  "description": "pdf calendar maker",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/artisanal/pdfCal.git"
+  },
+  "author": "Joseph Avendano",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/artisanal/pdfCal/issues"
+  },
+  "homepage": "https://github.com/artisanal/pdfCal#readme"
+}
