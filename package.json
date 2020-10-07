@@ -18,5 +18,8 @@
   "bugs": {
     "url": "https://github.com/artisanal/pdfCal/issues"
   },
-  "homepage": "https://github.com/artisanal/pdfCal#readme"
+  "homepage": "https://github.com/artisanal/pdfCal#readme",
+  "dependencies": {
+    "pdfkit": "^0.11.0"
+  }
 }
