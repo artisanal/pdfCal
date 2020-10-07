@@ -19,9 +19,7 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4d8082ba-fb2e-431c-af0c-bb0dd33565d5" name="Default Changelist" comment="Merge branch 'development' of https://github.com/artisanal/pdfCal into development&#10;&#10;# Conflicts:&#10;#&#9;.gitignore">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-    </list>
+    <list default="true" id="4d8082ba-fb2e-431c-af0c-bb0dd33565d5" name="Default Changelist" comment="Merge branch 'development' of https://github.com/artisanal/pdfCal into development&#10;&#10;# Conflicts:&#10;#&#9;.gitignore" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -32,6 +30,7 @@
       <list>
         <option value="CSS File" />
         <option value="HTML File" />
+        <option value="JavaScript File" />
       </list>
     </option>
   </component>
@@ -68,7 +67,7 @@
       <option name="presentableId" value="Default" />
       <updated>1601931019415</updated>
       <workItem from="1601931020503" duration="131000" />
-      <workItem from="1601931163637" duration="5198000" />
+      <workItem from="1601931163637" duration="5884000" />
     </task>
     <task id="LOCAL-00001" summary="Merge branch 'development' of https://github.com/artisanal/pdfCal into development&#10;&#10;# Conflicts:&#10;#&#9;.gitignore">
       <created>1602084484822</created>
