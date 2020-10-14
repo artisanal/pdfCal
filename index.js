@@ -22,13 +22,17 @@ function makePdf(page){
         .lineTo(548, 700)
         .stroke();
 }
-//This is the first function i need to work on, it will be where the new dates will be printed in the pdf.
+//Prints date, just needs to be edited to print the right things.
+
+
 function header(page, date){
-    page.text(date);
+    page.text(date.format('dddd, MMMM D'));
 }
 function preview(page){
     page.text("this is the preview",450);
 }
+
+//I need to add time increments to each line
 function timeSlot(page){
     let jump = (700-150)/12;
     page.lineWidth(10);
@@ -41,12 +45,16 @@ function timeSlot(page){
         jump+=45.83;
     }
 }
-function timeZone(page){
-    page.text("This is the time zone", 50,720);
+//This is where the time zone is printed in the pdf.
+function timeZone(page, date){
+    page.text("add time zone support later", 50,720);
 }
-function pageNumber(page){
-    page.text("This is the page number",400, 720);
+
+//This takes in a number that it prints to the pdf page.
+function pageNumber(page, number){
+    page.text(number ,480, 720);
 }
+
 function notes(page){
     page.text("This is the notes Section",320, 170)
 }
@@ -66,23 +74,22 @@ doc.on('pageAdding', e => {
 function createPdf( start, end){
     let startDate = dayjs(start);
     let endDate = dayjs(end);
-    for(let date = startDate; date === endDate; date.add(1, 'day')){
-        console.log('inside');
+    let days = endDate.diff(startDate, 'day');
+    for(let next = 0; next <=  days; next++){
         doc.addPage(defaultOptions);
         makePdf(doc);
-        header(doc, date);
+        header(doc, startDate);//good
         preview(doc);
         timeSlot(doc);
-        timeZone(doc);
-        pageNumber(doc);
+        timeZone(doc, startDate);//later
+        pageNumber(doc, next+1);//good
         notes(doc);
+        startDate = startDate.add(1, 'day');
     }
-    console.log(start);
-    console.log(end);
+
 }
 
-//const date = dayjs('2020-01-1');
-//console.log(date);
+
 createPdf('2020-07-01','2020-07-03');
 doc.pipe(fs.createWriteStream('output.pdf'));
 
