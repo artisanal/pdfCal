@@ -1,4 +1,5 @@
 const PDFDocument = require('pdfkit');
+const preview = require('./calendar');
 const fs = require('fs');
 var dayjs = require('dayjs')
 
@@ -7,9 +8,9 @@ var dayjs = require('dayjs')
 
 //doc.pipe(fs.createWriteStream('output.pdf'));
 
-function makePdf(page){
-    page.lineWidth(10);
-    page.lineCap('header')
+function drawLayout(page){
+  //  page.lineWidth(1);
+    page.lineCap('drawHeader')
         .moveTo(47, 150)
         .lineTo(548, 150)
         .stroke();
@@ -17,7 +18,7 @@ function makePdf(page){
         .moveTo(297.5, 150)
         .lineTo(297.5, 700)
         .stroke();
-    page.lineCap('header')
+    page.lineCap('drawHeader')
         .moveTo(47, 700)
         .lineTo(548, 700)
         .stroke();
@@ -25,19 +26,19 @@ function makePdf(page){
 //Prints date, just needs to be edited to print the right things.
 
 
-function header(page, date){
+function drawHeader(page, date){
     page.text(date.format('dddd, MMMM D'));
 }
-function preview(page){
-    page.text("this is the preview",450);
+function drawPreview(page){
+    //page.text("this is the drawPreview",450);
 }
 
 //I need to add time increments to each line
-function timeSlot(page){
+function drawTimeSlot(page){
     let jump = (700-150)/12;
-    page.lineWidth(10);
+    //page.lineWidth(10);
     for(let i=0; i<12; i++){
-        page.lineWidth(10);
+        //page.lineWidth(10);
         page.lineCap('timeslot')
             .moveTo(47, 150+jump)
             .lineTo(297.5, 150+jump)
@@ -45,18 +46,14 @@ function timeSlot(page){
         jump+=45.83;
     }
 }
-//This is where the time zone is printed in the pdf.
-function timeZone(page, date){
-    page.text("add time zone support later", 50,720);
-}
 
 //This takes in a number that it prints to the pdf page.
-function pageNumber(page, number){
-    page.text(number ,480, 720);
+function drawPageNumber(page, number, totalPages){
+    page.text(`page ${number} of ${totalPages}`,480, 720);
 }
 
-function notes(page){
-    page.text("This is the notes Section",320, 170)
+function drawNotes(page){
+    page.text("This is the drawNotes Section",320, 170)
 }
 
 const defaultOptions = {
@@ -65,32 +62,30 @@ const defaultOptions = {
 };
 
 const doc = new PDFDocument({ autoFirstPage: false });
-doc.on('pageAdding', e => {
-    e.options = defaultOptions;
-});
 
 //Eventually pages will be a not needed parameter, start and end should be able to give the amount of pdfs that are needed
 //will also need to make a function that edits the default options or at least overwrites them
-function createPdf( start, end){
+function createPdf( start, end ) {
     let startDate = dayjs(start);
     let endDate = dayjs(end);
-    let days = endDate.diff(startDate, 'day');
-    for(let next = 0; next <=  days; next++){
-        doc.addPage(defaultOptions);
-        makePdf(doc);
-        header(doc, startDate);//good
-        preview(doc);
-        timeSlot(doc);
-        timeZone(doc, startDate);//later
-        pageNumber(doc, next+1);//good
-        notes(doc);
-        startDate = startDate.add(1, 'day');
+    let pageNumber = 0;
+    for (let currentDate = startDate; endDate.diff(currentDate, 'day') >= 0; currentDate = currentDate.add(1, 'day')) {
+        doc.addPage(defaultOptions)
+        doc.lineWidth(0);
+        drawLayout(doc);
+        drawHeader(doc, currentDate);//good
+        drawPreview(doc);
+        drawTimeSlot(doc);//todo: put time to each line
+        pageNumber+=1;
+        drawPageNumber(doc, pageNumber, endDate.diff(startDate, 'day')+1);
+        drawNotes(doc);
+        preview(doc, currentDate);
     }
 
 }
 
 
-createPdf('2020-07-01','2020-07-03');
+createPdf('2020-08-01','2020-08-03');
 doc.pipe(fs.createWriteStream('output.pdf'));
 
 doc.end();
