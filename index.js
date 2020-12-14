@@ -3,13 +3,25 @@ const preview = require('./calendar');
 const fs = require('fs');
 var dayjs = require('dayjs')
 
-//const doc = new PDFDocument({autoFirstPage: false, margin:72});
 
 
-//doc.pipe(fs.createWriteStream('output.pdf'));
+function drawLayout2(page){
+    page.lineCap('drawHeader')
+        .moveTo(47, 150)
+        .lineTo(548, 150)
+        .stroke();
+    page.lineCap('vert')
+        .moveTo(196, 150)
+        .lineTo(196, 700)
+        .stroke();
+    page.lineCap('vert2')
+        .moveTo(392, 150)
+        .lineTo(392, 700)
+        .stroke();
+}
+
 
 function drawLayout(page){
-  //  page.lineWidth(1);
     page.lineCap('drawHeader')
         .moveTo(47, 150)
         .lineTo(548, 150)
@@ -34,6 +46,7 @@ function drawPreview(page){
 }
 
 //I need to add time increments to each line
+//does not work well with createpdfkit1
 function drawTimeSlot(page){
     let jump = (700-150)/12;
     //page.lineWidth(10);
@@ -41,7 +54,7 @@ function drawTimeSlot(page){
         //page.lineWidth(10);
         page.lineCap('timeslot')
             .moveTo(47, 150+jump)
-            .lineTo(297.5, 150+jump)
+            .lineTo(548, 150+jump)
             .stroke();
         jump+=45.83;
     }
@@ -85,8 +98,16 @@ function createPdf( start, end ) {
 
 }
 
+function createPdf2(start, end){
+    doc.addPage(defaultOptions);
+    doc.lineWidth(0);
+    drawLayout2(doc);
+    drawTimeSlot(doc);
+}
 
-createPdf('2020-08-01','2020-08-03');
+
+
+createPdf2('2020-08-01','2020-08-03');
 doc.pipe(fs.createWriteStream('output.pdf'));
 
 doc.end();
