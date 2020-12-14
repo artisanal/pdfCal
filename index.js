@@ -72,6 +72,7 @@ function createPdf( start, end ) {
     for (let currentDate = startDate; endDate.diff(currentDate, 'day') >= 0; currentDate = currentDate.add(1, 'day')) {
         doc.addPage(defaultOptions)
         doc.lineWidth(0);
+        doc.fontSize(15);
         drawLayout(doc);
         drawHeader(doc, currentDate);//good
         drawPreview(doc);
