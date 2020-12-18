@@ -58,33 +58,48 @@ function drawHeader(doc, date, sideOfPage){
     }
 }
 
-
-function dayPlaceHolders(date){
-    let text = ""
+/**
+ * Wish i could combine multiple numbers to a case so that there are less cases.This is where the
+ * coordinates are assigned for the days of the week.
+ * @param date
+ */
+function dayPlaceHolders(doc, date){
+    let text = "";
+    let x = 0;
+    let y = 125;
     switch (date.day()){
         case 0:
             text = "Sun, " + month[date.month()] + " " + date.date();
+            x = 435;
+            y = 575;
             break;
         case 1:
             text = "Mon, " + month[date.month()] + " " + date.date();
+            x = 73;
             break;
         case 2:
             text = "Tue, " + month[date.month()] + " " + date.date();
+            x = 254;
             break;
         case 3:
             text = "Wed, " + month[date.month()] + " " + date.date();
+            x = 435;
             break;
         case 4:
             text = "Thu, " + month[date.month()] + " " + date.date();
+            x = 73;
             break;
         case 5:
             text = "Fri, " + month[date.month()] + " " + date.date();
+            x = 254;
             break;
         case 6:
             text = "Sat, " + month[date.month()] + " " + date.date();
+            x = 435;
             break;
     }
-    console.log(text);
+    doc.text(text, x, y);
+    //console.log(text);
 }
 
 
@@ -185,7 +200,7 @@ function createPdf2(start, end){
             drawHeader(doc, startDate,"left");//I need to implement this in a better way.
             //This is where i loop through and make the left side of the page.
             for (let weekDay = 0; weekDay < 3; weekDay++) {
-                dayPlaceHolders(startDate);
+                dayPlaceHolders(doc, startDate);
                 startDate = startDate.add(1, 'day')
             }
             drawPageNumber(doc, pageNumber, totalWeeks * 2, "left");
@@ -196,11 +211,11 @@ function createPdf2(start, end){
             drawTimeSlot(doc);
             //This is where the right side of the page is made.
             for (let weekDay = 3; weekDay < 6; weekDay++) {
-                dayPlaceHolders(startDate);
+                dayPlaceHolders(doc,startDate);
                 startDate = startDate.add(1, 'day')
             }
             //Added this extra day place holder to account for sunday. I wanna find a workaround for this.
-            dayPlaceHolders(startDate);
+            dayPlaceHolders(doc, startDate);
             drawHeader(doc, startDate);
             startDate = startDate.add(1, 'day')
             drawPageNumber(doc, pageNumber, totalWeeks * 2);
