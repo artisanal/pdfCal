@@ -4,6 +4,8 @@ const fs = require('fs');
 var dayjs = require('dayjs')
 var weekOfYear = require('dayjs/plugin/weekOfYear')
 dayjs.extend(weekOfYear)
+let month= ["January","February","March","April","May","June","July",
+    "August","September","October","November","December"];
 
 
 /**
@@ -43,8 +45,15 @@ function drawLayout(page){
 //Prints date, just needs to be edited to print the right things.
 
 
-function drawHeader(page, date){
-    page.text("From " + date.month() + " " + date.day());
+function drawHeader(doc, date, sideOfPage){
+    let monthName = month[date.month()];
+    let monthDay = date.date();
+    if(sideOfPage === "left") {
+        doc.text(`From ${monthName} ${monthDay}`);
+    }
+    else{
+        doc.text(`To ${monthName} ${monthDay}`);
+    }
 }
 function drawPreview(page){
     //page.text("this is the drawPreview",450);
@@ -108,37 +117,46 @@ function createPdf( start, end ) {
 
 }
 
+
 function createPdf2(start, end){
     let startDate = dayjs(start).startOf('week');
+    //we want start date to begin on a monday.
+    startDate = startDate.add(1, 'day');
     let endDate = dayjs(end).endOf('week');
     let pageNumber = 1;
     let totalWeeks = (endDate.week() - startDate.week()) + 1
-    for (let weeks = totalWeeks; weeks > 0; weeks--) {
-        doc.addPage(defaultOptions);
-        doc.lineWidth(0);
-        drawLayout2(doc);
-        drawTimeSlot(doc);
-        drawHeader(startDate);//I need to implement this in a better way.
-        for(let weekDay = 0; weekDay < 3; weekDay++){
-
+    while(endDate.diff(startDate, 'day') >= 0) {
+        for (let weeks = totalWeeks; weeks > 0; weeks--) {
+            doc.addPage(defaultOptions);
+            doc.lineWidth(0);
+            drawLayout2(doc);
+            drawTimeSlot(doc);
+            drawHeader(doc, startDate,"left");//I need to implement this in a better way.
+            //This is where i loop through and make the left side of the page.
+            for (let weekDay = 0; weekDay < 3; weekDay++) {
+                startDate = startDate.add(1, 'day')
+            }
+            drawPageNumber(doc, pageNumber, totalWeeks * 2, "left");
+            pageNumber += 1;
+            doc.addPage(defaultOptions);
+            doc.lineWidth(0);
+            drawLayout2(doc);
+            drawTimeSlot(doc);
+            //This is where the right side of the page is made.
+            for (let weekDay = 3; weekDay < 6; weekDay++) {
+                startDate = startDate.add(1, 'day')
+            }
+            drawHeader(doc, startDate);
+            startDate = startDate.add(1, 'day')
+            drawPageNumber(doc, pageNumber, totalWeeks * 2);
+            pageNumber += 1;
         }
-        drawPageNumber(doc, pageNumber, totalWeeks*2, "left");
-        pageNumber += 1;
-        doc.addPage(defaultOptions);
-        doc.lineWidth(0);
-        drawLayout2(doc);
-        drawTimeSlot(doc);
-        for(let weekDay = 3; weekDay < 7; weekDay++){
-
-        }
-        drawPageNumber(doc, pageNumber, totalWeeks*2);
-        pageNumber += 1;
     }
 }
 
 
 
-createPdf2('2020-08-01','2020-08-03');
+createPdf2('2020-08-01','2020-08-20');
 doc.pipe(fs.createWriteStream('output.pdf'));
 
 doc.end();
