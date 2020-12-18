@@ -2,9 +2,14 @@ const PDFDocument = require('pdfkit');
 const preview = require('./calendar');
 const fs = require('fs');
 var dayjs = require('dayjs')
+var weekOfYear = require('dayjs/plugin/weekOfYear')
+dayjs.extend(weekOfYear)
 
 
-
+/**
+ * This is for the new layout that handles a whole week on two pages.
+ * @param page
+ */
 function drawLayout2(page){
     page.lineCap('drawHeader')
         .moveTo(47, 150)
@@ -39,7 +44,7 @@ function drawLayout(page){
 
 
 function drawHeader(page, date){
-    page.text(date.format('dddd, MMMM D'));
+    page.text("From " + date.month() + " " + date.day());
 }
 function drawPreview(page){
     //page.text("this is the drawPreview",450);
@@ -61,8 +66,13 @@ function drawTimeSlot(page){
 }
 
 //This takes in a number that it prints to the pdf page.
-function drawPageNumber(page, number, totalPages){
-    page.text(`page ${number} of ${totalPages}`,480, 720);
+function drawPageNumber(page, number, totalPages, sideOfPage){
+    if (sideOfPage === "left"){
+        page.text(`page ${number} of ${totalPages}`, 50, 720);
+    }
+    else {
+        page.text(`page ${number} of ${totalPages}`, 480, 720);
+    }
 }
 
 function drawNotes(page){
@@ -99,10 +109,31 @@ function createPdf( start, end ) {
 }
 
 function createPdf2(start, end){
-    doc.addPage(defaultOptions);
-    doc.lineWidth(0);
-    drawLayout2(doc);
-    drawTimeSlot(doc);
+    let startDate = dayjs(start).startOf('week');
+    let endDate = dayjs(end).endOf('week');
+    let pageNumber = 1;
+    let totalWeeks = (endDate.week() - startDate.week()) + 1
+    for (let weeks = totalWeeks; weeks > 0; weeks--) {
+        doc.addPage(defaultOptions);
+        doc.lineWidth(0);
+        drawLayout2(doc);
+        drawTimeSlot(doc);
+        drawHeader(startDate);//I need to implement this in a better way.
+        for(let weekDay = 0; weekDay < 3; weekDay++){
+
+        }
+        drawPageNumber(doc, pageNumber, totalWeeks*2, "left");
+        pageNumber += 1;
+        doc.addPage(defaultOptions);
+        doc.lineWidth(0);
+        drawLayout2(doc);
+        drawTimeSlot(doc);
+        for(let weekDay = 3; weekDay < 7; weekDay++){
+
+        }
+        drawPageNumber(doc, pageNumber, totalWeeks*2);
+        pageNumber += 1;
+    }
 }
 
 
