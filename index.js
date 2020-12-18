@@ -10,6 +10,8 @@ let month= ["January","February","March","April","May","June","July",
 
 /**
  * This is for the new layout that handles a whole week on two pages.
+ * if i adjust the layout in any way, I need to make changes to drawTimeslot. they
+ * are connected by the sunday block.
  * @param page
  */
 function drawLayout2(page){
@@ -61,16 +63,34 @@ function drawPreview(page){
 
 //I need to add time increments to each line
 //does not work well with createpdfkit1
-function drawTimeSlot(page){
+function drawTimeSlot(page, sideOfPage){
     let jump = (700-150)/12;
-    //page.lineWidth(10);
-    for(let i=0; i<12; i++){
-        //page.lineWidth(10);
-        page.lineCap('timeslot')
-            .moveTo(47, 150+jump)
-            .lineTo(548, 150+jump)
-            .stroke();
-        jump+=45.83;
+    if(sideOfPage === "left") {
+        for (let i = 0; i < 12; i++) {
+            //page.lineWidth(10);
+            page.lineCap('timeslot')
+                .moveTo(47, 150 + jump)
+                .lineTo(548, 150 + jump)
+                .stroke();
+            jump += 45.83;
+        }
+    }
+    else{
+        for (let i = 0; i < 12; i++) {
+            if(i > 8){
+                page.lineCap("sunday")
+                    .moveTo(47, 150 + jump)
+                    .lineTo(392, 150 + jump)
+                    .stroke()
+            }
+            else {
+                page.lineCap('timeslot')
+                    .moveTo(47, 150 + jump)
+                    .lineTo(548, 150 + jump)
+                    .stroke();
+            }
+            jump += 45.83;
+        }
     }
 }
 
@@ -130,7 +150,7 @@ function createPdf2(start, end){
             doc.addPage(defaultOptions);
             doc.lineWidth(0);
             drawLayout2(doc);
-            drawTimeSlot(doc);
+            drawTimeSlot(doc, "left");
             drawHeader(doc, startDate,"left");//I need to implement this in a better way.
             //This is where i loop through and make the left side of the page.
             for (let weekDay = 0; weekDay < 3; weekDay++) {
