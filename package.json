@@ -1,6 +1,6 @@
 {
   "name": "pdfcal",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "pdf calendar maker",
   "main": "index.js",
   "directories": {
