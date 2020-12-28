@@ -1,9 +1,11 @@
 const PDFDocument = require("pdfkit")
 const preview = require("./calendar")
 const fs = require("fs")
-var dayjs = require("dayjs")
-var weekOfYear = require("dayjs/plugin/weekOfYear")
+let dayjs = require("dayjs")
+let weekOfYear = require("dayjs/plugin/weekOfYear")
 dayjs.extend(weekOfYear)
+let duration = require("dayjs/plugin/Duration");
+dayjs.extend(duration)
 let month = ["January", "February", "March", "April", "May", "June", "July",
     "August", "September", "October", "November", "December"]
 
@@ -152,12 +154,12 @@ function dayPlaceHolders(doc, date) {
     ];
 
     let info = days[date.day()];
-    let xOffset = 45;
+    let xOffset = 50;
     let yOffset = 100;
     doc.fontSize(64)
     .text(date.date(), xOffset + info.x, yOffset + info.y)
-    .fontSize(30)
-    .text(info.dow, xOffset + info.x, yOffset + 50 + info.y)
+    .fontSize(28)
+    .text(info.dow, xOffset + info.x, yOffset + 60 + info.y)
 
 
 
@@ -204,9 +206,9 @@ function drawTimeSlot(page, sideOfPage) {
 function drawPageNumber(page, number, totalPages, sideOfPage) {
     doc.fontSize(12)
     if (sideOfPage === "left") {
-        page.text(`page ${number} of ${totalPages}`, 50, 720)
+        page.text(`page ${number} of ${totalPages + 1}`, 50, 720, {align: "left"})
     } else {
-        page.text(`page ${number} of ${totalPages}`, 480, 720)
+        page.text(`page ${number} of ${totalPages + 1}`, 15, 720)
     }
 }
 
@@ -249,18 +251,21 @@ function createPdf2(start, end) {
     //we want start date to begin on a monday.
     startDate = startDate.add(1, "day")
     let endDate = dayjs(end).endOf("week")
-    let totalWeeks = (endDate.week() - startDate.week()) + 1
+    //let totalWeeks = (endDate.week() - startDate.week()) + 1
+    let totalWeeks = Math.round(dayjs.duration(endDate.diff(startDate)).asWeeks())
+    let totalPages = totalWeeks * 2;
 
     doc.addPage(defaultOptions)
-    let title = `${startDate} to ${endDate}`
+    let title = '2021'
     let x = doc.x, y = doc.y, h = 700, w = 530;
     let options = {width:w, align:'center'};
     doc.rect(x, y, w, h).stroke()
     .font('Helvetica-Bold')
-    .fontSize(48)
+    .fontSize(128)
     .text(title, x, y + 0.5 * (h - doc.heightOfString(title, options)), options);
 
     let pageNumber = 2
+    //totalPages;
     while (endDate.diff(startDate, "day") >= 0) {
         for (let weeks = totalWeeks; weeks > 0; weeks--) {
             doc.addPage(defaultOptions)
@@ -273,7 +278,7 @@ function createPdf2(start, end) {
                 dayPlaceHolders(doc, startDate)
                 startDate = startDate.add(1, "day")
             }
-            drawPageNumber(doc, pageNumber, totalWeeks * 2, "left")
+            drawPageNumber(doc, pageNumber, totalPages, "left")
             pageNumber += 1
             doc.addPage(defaultOptions)
             doc.lineWidth(0)
@@ -288,14 +293,14 @@ function createPdf2(start, end) {
             dayPlaceHolders(doc, startDate)
             drawHeader(doc, startDate)
             startDate = startDate.add(1, "day")
-            drawPageNumber(doc, pageNumber, totalWeeks * 2)
+            drawPageNumber(doc, pageNumber, totalPages)
             pageNumber += 1
         }
     }
 }
 
 
-createPdf2("2021-01-01", "2021-01-31")
+createPdf2("2021-01-01", "2021-12-31")
 doc.pipe(fs.createWriteStream("output.pdf"))
 
 doc.end()
