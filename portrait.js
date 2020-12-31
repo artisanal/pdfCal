@@ -141,18 +141,22 @@ function drawHeader(doc, date, sideOfPage) {
     if (sideOfPage === "left") {
         doc.font("Helvetica")
             .fontSize(12)
-            .text("from ", 438, 30, {continued: false, textBaseline: "alphabetic", margins: 0})
+            .text("from ", 428, 30, {continued: false, textBaseline: "alphabetic", margins: 0})
             .font("Helvetica-Bold")
             .fontSize(52)
             .text(`${monthName} ${monthDay}`, {textBaseline: "alphabetic", margins: 0})
     } else {
         let heading = `${monthName} ${monthDay}`
-        doc.font("Helvetica")
-            .fontSize(12)
-            .text("to ", 384, 30, {continued: false, textBaseline: "alphabetic", margins: 0})
-            .font("Helvetica-Bold")
-            .fontSize(52)
-            .text(`${monthName} ${monthDay}`, {textBaseline: "alphabetic", margins:0})
+        doc
+        .font("Helvetica-Bold")
+        .fontSize(52)
+        let headingWidth = doc.widthOfString(heading);
+        doc
+        .text(`${monthName} ${monthDay}`, 648 - headingWidth, 42, {textBaseline: "alphabetic", margins:0, align: 'right', width: 0})
+        .font("Helvetica")
+        .fontSize(12)
+        .text("to", 648 - headingWidth, 30, {continued: true, textBaseline: "alphabetic", margins: 0, align: 'right', width: 0})
+
     }
     doc.fontSize(12)
 }
