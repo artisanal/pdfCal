@@ -2,9 +2,9 @@ const PDFDocument = require("pdfkit")
 const preview = require("./calendar")
 const fs = require("fs")
 let dayjs = require("dayjs")
-let weekOfYear = require("dayjs/plugin/weekOfYear")
+let weekOfYear = require("dayjs/plugin/weekOfYear.js")
 dayjs.extend(weekOfYear)
-let duration = require("dayjs/plugin/Duration");
+let duration = require("dayjs/plugin/Duration.js");
 dayjs.extend(duration)
 let month = ["January", "February", "March", "April", "May", "June", "July",
     "August", "September", "October", "November", "December"]
@@ -298,12 +298,6 @@ function createPdf2(start, end) {
         }
     }
 }
-
-
-//createPdf2("2021-01-01", "2021-12-31")
-//doc.pipe(fs.createWriteStream("output.pdf"))
-//
-//doc.end()
 
 const express = require('express')
 const app = express()
