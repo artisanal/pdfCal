@@ -2,9 +2,9 @@ const PDFDocument = require("pdfkit")
 const preview = require("./calendar")
 const fs = require("fs")
 let dayjs = require("dayjs")
-let weekOfYear = require("dayjs/plugin/weekOfYear.js")
+let weekOfYear = require("dayjs/plugin/weekOfYear")
 dayjs.extend(weekOfYear)
-let duration = require("dayjs/plugin/Duration.js");
+let duration = require("dayjs/plugin/duration");
 dayjs.extend(duration)
 let month = ["January", "February", "March", "April", "May", "June", "July",
     "August", "September", "October", "November", "December"]
