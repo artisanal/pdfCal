@@ -300,7 +300,19 @@ function createPdf2(start, end) {
 }
 
 
-createPdf2("2021-01-01", "2021-12-31")
-doc.pipe(fs.createWriteStream("output.pdf"))
+//createPdf2("2021-01-01", "2021-12-31")
+//doc.pipe(fs.createWriteStream("output.pdf"))
+//
+//doc.end()
 
-doc.end()
+const express = require('express')
+const app = express()
+const port = 3000
+
+app.get('/', (req, res) => {
+    res.send('Watch this space...')
+})
+
+app.listen(port, () => {
+    console.log(`pdf-calendar listening on port ${port}`)
+})

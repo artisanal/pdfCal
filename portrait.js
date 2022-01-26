@@ -265,7 +265,7 @@ function createPdf2(start, end) {
     let totalPages = totalWeeks * 2;
 
     doc.addPage(titlePage)
-    let title = '2021'
+    let title = '2022'
     let x = doc.x, y = doc.y, h = 716, w = 548;
     let options = {width:w, align:'center'};
     doc.rect(x, y, w, h).stroke()
@@ -309,7 +309,7 @@ function createPdf2(start, end) {
 }
 
 
-createPdf2("2021-01-01", "2021-12-31")
+createPdf2("2022-01-01", "2022-12-31")
 doc.pipe(fs.createWriteStream("output.pdf"))
 
 doc.end()
