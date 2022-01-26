@@ -66,39 +66,59 @@ const rightAlignmentDifferentFontText = ({
  * are connected by the sunday block.
  * @param page
  */
-function drawLayout2(page) {
-    page.lineWidth(1)
-    page.lineCap("drawHeader")
-    .moveTo(47, 150)
-    .lineTo(548, 150)
-    .stroke()
-    page.lineWidth(8)
-    page.lineCap("vert")
-    .moveTo(196, 150)
-    .lineTo(196, 700)
-    .stroke()
-    page.lineWidth(8)
-    page.lineCap("vert2")
-    .moveTo(392, 150)
-    .lineTo(392, 700)
-    .stroke()
-    page.lineWidth(1)
+function drawLayout2(page, sideOfPage) {
+    if(sideOfPage === "left") {
+        page.lineWidth(1)
+        page.lineCap("drawHeader")
+            .moveTo(408, 144)
+            .lineTo(1056, 144)
+            .stroke()
+        page.lineWidth(8)
+        page.lineCap("vert")
+            .moveTo(624, 144)
+            .lineTo(624, 744)
+            .stroke()
+        page.lineWidth(8)
+        page.lineCap("vert2")
+            .moveTo(840, 144)
+            .lineTo(840, 744)
+            .stroke()
+        page.lineWidth(1)
+    }
+    else{
+        page.lineWidth(1)
+        page.lineCap("drawHeader")
+            .moveTo(0, 144)
+            .lineTo(648, 144)
+            .stroke()
+        page.lineWidth(8)
+        page.lineCap("vert")
+            .moveTo(216, 144)
+            .lineTo(216, 744)
+            .stroke()
+        page.lineWidth(8)
+        page.lineCap("vert2")
+            .moveTo(432, 144)
+            .lineTo(432, 744)
+            .stroke()
+        page.lineWidth(1)
+    }
 }
 
 
 function drawLayout(page) {
     page.lineCap("drawHeader")
-    .moveTo(47, 150)
-    .lineTo(548, 150)
-    .stroke()
+        .moveTo(47, 150)
+        .lineTo(548, 150)
+        .stroke()
     page.lineCap("vert")
-    .moveTo(297.5, 150)
-    .lineTo(297.5, 700)
-    .stroke()
+        .moveTo(297.5, 150)
+        .lineTo(297.5, 700)
+        .stroke()
     page.lineCap("drawHeader")
-    .moveTo(47, 700)
-    .lineTo(548, 700)
-    .stroke()
+        .moveTo(47, 700)
+        .lineTo(548, 700)
+        .stroke()
 }
 
 //Prints date, just needs to be edited to print the right things.
@@ -120,19 +140,23 @@ function drawHeader(doc, date, sideOfPage) {
     doc.fontSize(12)
     if (sideOfPage === "left") {
         doc.font("Helvetica")
-        .fontSize(12)
-        .text("from ", 45, 30, {continued: false, textBaseline: "alphabetic", align: "left"})
-        .font("Helvetica-Bold")
-        .fontSize(52)
-        .text(`${monthName} ${monthDay}`, {textBaseline: "alphabetic"})
+            .fontSize(12)
+            .text("from ", 428, 30, {continued: false, textBaseline: "alphabetic", margins: 0})
+            .font("Helvetica-Bold")
+            .fontSize(52)
+            .text(`${monthName} ${monthDay}`, {textBaseline: "alphabetic", margins: 0})
     } else {
         let heading = `${monthName} ${monthDay}`
-        doc.font("Helvetica")
-        .fontSize(12)
-        .text("to ", 0, 30, {continued: false, textBaseline: "alphabetic", align: "right"})
+        doc
         .font("Helvetica-Bold")
         .fontSize(52)
-        .text(`${monthName} ${monthDay}`, {continued: true, textBaseline: "alphabetic", align: "right"})
+        let headingWidth = doc.widthOfString(heading);
+        doc
+        .text(`${monthName} ${monthDay}`, 648 - headingWidth, 42, {textBaseline: "alphabetic", margins:0, align: 'right', width: 0})
+        .font("Helvetica")
+        .fontSize(12)
+        .text("to", 648 - headingWidth, 30, {continued: true, textBaseline: "alphabetic", margins: 0, align: 'right', width: 0})
+
     }
     doc.fontSize(12)
 }
@@ -144,22 +168,22 @@ function drawHeader(doc, date, sideOfPage) {
  */
 function dayPlaceHolders(doc, date) {
     const days = [
-        {dow: "Sunday", x: 350, y: 465},
-        {dow: "Monday", x: 0, y: 0 },
-        {dow: "Tuesday", x: 155, y: 0 },
-        {dow: "Wednesday", x: 350, y:0 },
+        {dow: "Sunday", x: 432, y: 455},
+        {dow: "Monday", x: 408, y: 0 },
+        {dow: "Tuesday", x: 624, y: 0 },
+        {dow: "Wednesday", x: 840, y:0 },
         {dow: "Thursday", x: 0, y: 0 },
-        {dow: "Friday", x: 155, y: 0},
-        {dow: "Saturday", x: 350, y: 0 }
+        {dow: "Friday", x: 216, y: 0},
+        {dow: "Saturday", x: 432, y: 0 }
     ];
 
     let info = days[date.day()];
-    let xOffset = 50;
-    let yOffset = 100;
+    let xOffset = 20;
+    let yOffset = 90;
     doc.fontSize(64)
-    .text(date.date(), xOffset + info.x, yOffset + info.y)
-    .fontSize(28)
-    .text(info.dow, xOffset + info.x, yOffset + 60 + info.y)
+        .text(date.date(), xOffset + info.x, yOffset + info.y)
+        .fontSize(28)
+        .text(info.dow, xOffset + info.x, yOffset + 60 + info.y)
 
 
 
@@ -174,30 +198,30 @@ function drawPreview(page) {
 //I need to add time increments to each line
 //does not work well with createpdfkit1
 function drawTimeSlot(page, sideOfPage) {
-    let jump = (700 - 150) / 12
+    let jump = 50;
     if (sideOfPage === "left") {
         for (let i = 0; i < 12; i++) {
             //page.lineWidth(10);
             page.lineCap("timeslot")
-            .moveTo(47, 150 + jump)
-            .lineTo(548, 150 + jump)
-            .stroke()
-            jump += 45.83
+                .moveTo(408, 144 + jump)
+                .lineTo(1056, 144 + jump)
+                .stroke()
+            jump += 50
         }
     } else {
         for (let i = 0; i < 12; i++) {
             if (i > 8) {
                 page.lineCap("sunday")
-                .moveTo(47, 150 + jump)
-                .lineTo(392, 150 + jump)
-                .stroke()
+                    .moveTo(0, 144 + jump)
+                    .lineTo(432, 144 + jump)
+                    .stroke()
             } else {
                 page.lineCap("timeslot")
-                .moveTo(47, 150 + jump)
-                .lineTo(548, 150 + jump)
-                .stroke()
+                    .moveTo(0, 144 + jump)
+                    .lineTo(648, 144 + jump)
+                    .stroke()
             }
-            jump += 45.83
+            jump += 50
         }
     }
 }
@@ -206,44 +230,29 @@ function drawTimeSlot(page, sideOfPage) {
 function drawPageNumber(page, number, totalPages, sideOfPage) {
     doc.fontSize(12)
     if (sideOfPage === "left") {
-        page.text(`page ${number} of ${totalPages + 1}`, 50, 720, {align: "left"})
+        page.text(`page ${number} of ${totalPages + 1}`, 418, 765)
     } else {
-        page.text(`page ${number} of ${totalPages + 1}`, 15, 720)
+        page.text(`page ${number} of ${totalPages + 1}`, 552, 765)
     }
 }
 
-function drawNotes(page) {
-    page.text("This is the drawNotes Section", 320, 170)
-}
 
 const defaultOptions = {
-    margins: {top: 50, left: 50, right: 50, bottom: 50},
-    font: "Helvetica"
+    margins: {top: 50, left: 0, right: 0, bottom: 0},
+    font: "Helvetica",
+    size: [816,1056],
+    layout: "landscape",
+}
+
+const titlePage = {
+    font: "Helvetica",
+    size: [816,1056],
+    layout: "landscape",
+    margins:{top: 50, bottom: 50, left: 50, right: 458}
 }
 
 const doc = new PDFDocument({autoFirstPage: false})
 
-//Eventually pages will be a not needed parameter, start and end should be able to give the amount of pdfs that are needed
-//will also need to make a function that edits the default options or at least overwrites them
-function createPdf(start, end) {
-    let startDate = dayjs(start)
-    let endDate = dayjs(end)
-    let pageNumber = 0
-    for (let currentDate = startDate; endDate.diff(currentDate, 'day') >= 0; currentDate = currentDate.add(1, "day")) {
-        doc.addPage(defaultOptions)
-        doc.lineWidth(0)
-        doc.fontSize(15)
-        drawLayout(doc)
-        drawHeader(doc, currentDate)//good
-        drawPreview(doc)
-        drawTimeSlot(doc)//todo: put time to each line
-        pageNumber += 1
-        drawPageNumber(doc, pageNumber, endDate.diff(startDate, "day") + 1)
-        drawNotes(doc)
-        preview(doc, currentDate)
-    }
-
-}
 
 
 function createPdf2(start, end) {
@@ -255,14 +264,14 @@ function createPdf2(start, end) {
     let totalWeeks = Math.round(dayjs.duration(endDate.diff(startDate)).asWeeks())
     let totalPages = totalWeeks * 2;
 
-    doc.addPage(defaultOptions)
-    let title = '2021'
-    let x = doc.x, y = doc.y, h = 700, w = 530;
+    doc.addPage(titlePage)
+    let title = '2022'
+    let x = doc.x, y = doc.y, h = 716, w = 548;
     let options = {width:w, align:'center'};
     doc.rect(x, y, w, h).stroke()
-    .font('Helvetica-Bold')
-    .fontSize(128)
-    .text(title, x, y + 0.5 * (h - doc.heightOfString(title, options)), options);
+        .font('Helvetica-Bold')
+        .fontSize(128)
+        .text(title, x, y + 0.5 * (h - doc.heightOfString(title, options)), options);
 
     let pageNumber = 2
     //totalPages;
@@ -270,7 +279,7 @@ function createPdf2(start, end) {
         for (let weeks = totalWeeks; weeks > 0; weeks--) {
             doc.addPage(defaultOptions)
             doc.lineWidth(0)
-            drawLayout2(doc)
+            drawLayout2(doc,"left")
             drawTimeSlot(doc, "left")
             drawHeader(doc, startDate, "left")//I need to implement this in a better way.
             //This is where i loop through and make the left side of the page.
@@ -300,19 +309,7 @@ function createPdf2(start, end) {
 }
 
 
-//createPdf2("2021-01-01", "2021-12-31")
-//doc.pipe(fs.createWriteStream("output.pdf"))
-//
-//doc.end()
+createPdf2("2022-01-01", "2022-12-31")
+doc.pipe(fs.createWriteStream("output.pdf"))
 
-const express = require('express')
-const app = express()
-const port = 3000
-
-app.get('/', (req, res) => {
-    res.send('Watch this space...')
-})
-
-app.listen(port, () => {
-    console.log(`pdf-calendar listening on port ${port}`)
-})
+doc.end()
